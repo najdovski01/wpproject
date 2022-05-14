@@ -1,0 +1,56 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h3 class="jumbotron-heading">Cart for
+                <th:block th:if="${#request.getRemoteUser() != null}" th:text="${#request.getRemoteUser()}"></th:block>
+            </h3>
+        </div>
+    </section>
+
+    <div th:if="${hasError}">
+        <h5 class="text-center text-danger" th:text="${error}"></h5>
+    </div>
+
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12" th:if="${books.size() > 0}">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">Book name</th>
+                            <th scope="col">Book description</th>
+                            <th scope="col">Book price</th>
+                            <th scope="col">Book author</th>
+                            <th scope="col">Book genre</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="book : ${books}" class="cart-item">
+                            <td th:text="${book.getName()}"></td>
+                            <td th:text="${book.getDescription()}"></td>
+                            <td th:text="${book.getPrice()}"></td>
+                            <td th:text="${book.getAuthor() != null} ? ${book.getAuthor().getName()} : 'No Author'"></td>
+                            <td th:text="${book.getGenre() != null} ? ${book.getGenre().getName()} : 'No Genre'"></td>
+
+                            <td class="text-right">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <form th:action="@{'/cart/delete/{id}' (id=${book.getId()})}"
+                                          th:method="DELETE">
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger delete-product">
+                                            <i class="fa fa-trash">Delete</i>
+                                        </button>
+                                    </form>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

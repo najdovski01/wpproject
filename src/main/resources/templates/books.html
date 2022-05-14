@@ -1,0 +1,92 @@
+<script src="../../java/com/example/wpproject/web/controller/bootstrap/js/bootstrap.js"></script>
+<link rel="stylesheet" href="../../java/com/example/wpproject/web/controller/bootstrap/css/bootstrap.css">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">E-Library</h1>
+            <h3 class="jumbotron-heading">All Books</h3>
+        </div>
+    </section>
+
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12" th:if="${books.size() > 0}">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th class="col-auto">Book name</th>
+                            <!--<th class="col-4">Book description</th>-->
+                            <th class="col-auto">Book author</th>
+                            <th class="col-auto">Book genre</th>
+                            <th class="col-auto">Book price</th>
+                            <th class="col-auto"></th>
+                            <th class="col-auto"></th>
+                            <th class="col-auto"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="book : ${books}" class="book">
+                            <td th:text="${book.getName()}"></td>
+                            <!--<td th:text="${book.getDescription()}"></td>-->
+                            <td th:text="${book.getAuthor().getName()} + ' ' + ${book.getAuthor().getSurname()}"></td>
+                            <td th:text="${book.getGenre().getName()}"></td>
+                            <td th:text="${book.getPrice()}"></td>
+
+                            <td class="text-center">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <form th:action="@{'/books/delete/{id}' (id=${book.getId()})}"
+                                          th:method="DELETE">
+                                        <button type="submit"
+                                                class="btn btn-danger delete-book">
+                                            <i class="fa fa-trash">Delete</i>
+                                        </button>
+                                    </form>
+                                </th:block>
+                            </td>
+
+                            <td class="text-center">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <form th:action="@{'/books/edit-form/{id}' (id=${book.getId()})}"
+                                          th:method="GET">
+                                        <button type="submit" name="Edit"
+                                                class="btn btn-info edit-book">
+                                            <i>Edit</i>
+                                        </button>
+                                    </form>
+                                </th:block>
+                            </td>
+
+                            <!--<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                <a th:href="@{'/book/edit-form/{id}' (id=${book.getId()})}"
+                                   class="btn btn-sm btn-info edit-book">
+                                    <i class="fa fa-trash">Edit</i>
+                                </a>
+                            </th:block>-->
+                            <td class="text-center">
+                                <form th:action="@{'/cart/add-book/{id}' (id=${book.getId()})}"
+                                      th:method="POST"
+                                      sec:authorize="isAuthenticated()">
+                                    <button type="submit"
+                                            class="btn btn-primary cart-book">
+                                        <i class="fa fa-trash">Add book to cart</i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/books/add-form" class="btn btn-block btn-dark add-book-btn">
+                            Add new book
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

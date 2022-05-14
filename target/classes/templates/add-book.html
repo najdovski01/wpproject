@@ -1,0 +1,82 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">E-Library</h1>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <form action="/books/add" method="POST">
+                    <input id="id" type="hidden" name="id" th:value="(${book} != null ? ${book.getId()} : '')">
+                    <div class="form-group">
+                        <label for="name">Book name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
+                               th:value="(${book} != null ? ${book.getName()} : '')"
+                               required
+                               placeholder="Enter book name">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="text"
+                               class="form-control"
+                               id="price"
+                               name="price"
+                               th:value="(${book} != null ? ${book.getPrice()} : '')"
+                               placeholder="Enter price">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text"
+                               class="form-control"
+                               id="description"
+                               name="description"
+                               th:value="(${book} != null ? ${book.getDescription()} : '')"
+                               placeholder="Enter book description">
+                    </div>
+                    <div class="form-group">
+                        <label>Genre</label>
+                        <select name="genre" class="form-control">
+                            <option th:if="${book} != null"
+                                    th:selected="${book.getGenre() != null &&
+                                book.getGenre().getId() == g.getId()}"
+                                    th:each="g : ${genres}"
+                                    th:value="${g.getId()}"
+                                    th:text="${g.getName()}">
+                            </option>
+                            <option th:if="${book} == null"
+                                    th:each="g : ${genres}"
+                                    th:value="${g.getId()}"
+                                    th:text="${g.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Author</label>
+                        <select name="author" class="form-control">
+                            <option th:if="${book} != null"
+                                    th:selected="${book.getAuthor() != null && book.getAuthor().getId() == a.getId()}"
+                                    th:each="a : ${authors}"
+                                    th:value="${a.getId()}"
+                                    th:text="${a.getName()}">
+                            </option>
+                            <option th:if="${book} == null"
+                                    th:each="a : ${authors}"
+                                    th:value="${a.getId()}"
+                                    th:text="${a.getName()} + ' ' + ${a.getSurname()}">
+                            </option>
+                        </select>
+                    </div>
+                    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+                    <a type="button" class="btn btn-primary" href="/Books">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>

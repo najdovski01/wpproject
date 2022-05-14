@@ -1,0 +1,50 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">E-Library</h1>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <form action="/authors/add" method="POST">
+                    <input id="id" type="hidden" name="id" th:value="(${author} != null ? ${author.getId()} : '')">
+                    <div class="form-group">
+                        <label for="name">Author name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
+                               th:value="(${author} != null ? ${author.getName()} : '')"
+                               required
+                               placeholder="Enter author name">
+                    </div>
+                    <div class="form-group">
+                        <label for="surname">Author surname</label>
+                        <input type="text"
+                               class="form-control"
+                               id="surname"
+                               name="surname"
+                               th:value="(${author} != null ? ${author.getSurname()} : '')"
+                               placeholder="Enter author surname">
+                    </div>
+                    <div class="form-group">
+                        <label for="nationality">Author nationality</label>
+                        <input type="text"
+                               class="form-control"
+                               id="nationality"
+                               name="nationality"
+                               th:value="(${author} != null ? ${author.getNationality()} : '')"
+                               placeholder="Enter author description">
+                    </div>
+
+                    <button id="submit" href="/authors/add" type="submit" class="btn btn-primary">Submit</button>
+                    <a type="button" class="btn btn-primary" href="/authors">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
