@@ -23,17 +23,29 @@ public class Book {
     @ManyToOne
     private Genre genre;
 
+    @ManyToOne
+    private PublishHouse publishHouse;
+
     private double price;
 
     public Book() {
     }
 
-    public Book(String name, Author author, Genre genre,  String description, double price) {
+    public Book(String name, Author author, Genre genre,  String description, double price, PublishHouse publishHouse) {
         this.name = name;
         this.author = author;
         this.description = description;
         this.genre = genre;
         this.price = price;
+        this.publishHouse = publishHouse;
+    }
+
+    public PublishHouse getPublishHouse() {
+        return publishHouse;
+    }
+
+    public void setPublishHouse(PublishHouse publishHouse) {
+        this.publishHouse = publishHouse;
     }
 
     public Long getId() {

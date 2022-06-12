@@ -2,6 +2,8 @@ package com.example.wpproject.service;
 
 import com.example.wpproject.model.Book;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +11,8 @@ public interface BookService {
     List<Book> findAll();
     Optional<Book> findById(Long id);
     Optional<Book> findByName(String name);
-    Optional<Book> save(String name, Long authorId, Long genreId, String description, Double price);
-    Optional<Book> edit(Long id, String name, Long authorId, Long genreId, String description, Double price);
+    Optional<Book> save(String name, Long authorId, Long genreId, String description, Double price, Long id);
+    Optional<Book> edit(Long id, String name, Long authorId, Long genreId, String description, Double price, Long houseId);
     void deleteById(Long id);
+    void export(HttpServletResponse response, Long id) throws IOException;
 }
