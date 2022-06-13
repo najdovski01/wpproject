@@ -12,9 +12,18 @@ import com.example.wpproject.repository.BookRepository;
 import com.example.wpproject.repository.CartRepository;
 import com.example.wpproject.repository.UserRepository;
 import com.example.wpproject.service.CartService;
+import com.lowagie.text.Font;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +32,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private List<Book> books;
 
     public CartServiceImpl(CartRepository cartRepository, UserRepository userRepository, BookRepository bookRepository) {
         this.cartRepository = cartRepository;
@@ -37,6 +47,10 @@ public class CartServiceImpl implements CartService {
         return this.cartRepository.findById(id).get().getBooks();
     }
 
+    @Override
+    public List<Book> listAll() {
+        return this.bookRepository.findAll();
+    }
 
 
     @Override
@@ -62,5 +76,73 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteById(Long id) {
         this.cartRepository.deleteById(id);
+    }
+
+    @Override
+    public void writeTableHeader(PdfPTable table) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(Color.BLUE);
+        cell.setPadding(5);
+
+        Font font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setColor(Color.WHITE);
+
+        cell.setPhrase(new Phrase("Book ID", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Book name", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Author", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Genre", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Publish House", font));
+        table.addCell(cell);
+    }
+    @Override
+    public void writeTableData(PdfPTable table){
+        for (Book book : books) {
+            table.addCell(String.valueOf(book.getId()));
+            table.addCell(book.getAuthor().getName());
+            table.addCell(book.getDescription());
+            table.addCell(book.getGenre().getName());
+            table.addCell(book.getPublishHouse().getName());
+        }
+    }
+
+    @Override
+    public void export(HttpServletResponse response) throws DocumentException, IOException {
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+        PdfPTable table = new PdfPTable(5);
+
+
+        document.open();
+        Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        font.setSize(18);
+        font.setColor(Color.BLUE);
+
+        Paragraph p = new Paragraph("List of books in cart", font);
+        p.setAlignment(Paragraph.ALIGN_CENTER);
+
+        document.add(p);
+
+        table.setWidthPercentage(100f);
+        table.setWidths(new float[] {1.5f, 3.5f, 3.0f, 3.0f, 1.5f});
+        table.setSpacingBefore(10);
+
+        writeTableHeader(table);
+        writeTableData(table);
+        document.add(table);
+
+        document.close();
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        return this.bookRepository.findById(id);
     }
 }

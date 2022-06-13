@@ -15,9 +15,12 @@ import com.example.wpproject.repository.PublishHouseRepository;
 import com.example.wpproject.service.BookService;
 import com.lowagie.text.Font;
 import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -26,12 +29,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+
+
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
+    private List<Book> books;
     @Autowired
     private final PublishHouseRepository publishHouseRepository;
 
@@ -87,45 +93,66 @@ public class BookServiceImpl implements BookService {
         this.bookRepository.deleteById(id);
     }
 
+
+
     @Override
-    public void export(HttpServletResponse response, Long id) throws IOException {
+    public void writeTableHeader(PdfPTable table) {
+        PdfPCell cell = new PdfPCell();
+        cell.setBackgroundColor(Color.BLUE);
+        cell.setPadding(5);
+
+        Font font = FontFactory.getFont(FontFactory.HELVETICA);
+        font.setColor(Color.WHITE);
+
+        cell.setPhrase(new Phrase("Book ID", font));
+
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Book", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Author", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Genre", font));
+        table.addCell(cell);
+
+        cell.setPhrase(new Phrase("Publish House", font));
+        table.addCell(cell);
+    }
+
+
+
+    public void export(HttpServletResponse response, @PathVariable Long id) throws DocumentException, IOException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document,response.getOutputStream());
+        PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
-
-        String name = this.bookRepository.findById(id).get().getName();
-        String author = this.bookRepository.findById(id).get().getAuthor().getName();
-        String description = this.bookRepository.findById(id).get().getDescription();
-        String genre = this.bookRepository.findById(id).get().getGenre().getName();
-        String publishHouse = this.bookRepository.findById(id).get().getPublishHouse().getName();
-
-
         Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         font.setSize(18);
         font.setColor(Color.BLUE);
 
-        Paragraph paragraph = new Paragraph("Book informations: ");
-        Paragraph paragraph1 = new Paragraph("Book: " + name);
-        Paragraph paragraph2 = new Paragraph("Auhor: " + author);
-        Paragraph paragraph3 = new Paragraph("Description: " + description);
-        Paragraph paragraph4 = new Paragraph("Genre: " + genre);
-        Paragraph paragraph5 = new Paragraph("Publish House: " + publishHouse);
+        Paragraph p = new Paragraph("Book Info", font);
+        p.setAlignment(Paragraph.ALIGN_CENTER);
 
-        paragraph.setAlignment(Paragraph.ALIGN_LEFT);
-        paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
-        paragraph2.setAlignment(Paragraph.ALIGN_CENTER);
-        paragraph3.setAlignment(Paragraph.ALIGN_LEFT);
-        paragraph4.setAlignment(Paragraph.ALIGN_LEFT);
-        paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(p);
 
+        PdfPTable table = new PdfPTable(5);
+        table.setWidthPercentage(100f);
+        table.setWidths(new float[] {1.5f, 3.5f, 3.0f, 3.0f, 1.5f});
+        table.setSpacingBefore(10);
 
-        paragraph.setSpacingAfter(15);
-        document.add(paragraph1);
-        document.add(paragraph2);
-        document.add(paragraph3);
-        document.add(paragraph4);
-        document.add(paragraph5);
+        writeTableHeader(table);
+
+        table.addCell(this.bookRepository.findById(id).get().getName());
+        table.addCell(this.bookRepository.findById(id).get().getAuthor().getName());
+        table.addCell(this.bookRepository.findById(id).get().getDescription());
+        table.addCell(this.bookRepository.findById(id).get().getGenre().getName());
+        table.addCell(this.bookRepository.findById(id).get().getPublishHouse().getName());
+        document.add(table);
+
         document.close();
+
     }
+
 }

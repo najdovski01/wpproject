@@ -24,6 +24,7 @@
                             <th scope="col">Book author</th>
                             <th scope="col">Book genre</th>
                         </tr>
+
                         </thead>
                         <tbody>
                         <tr th:each="book : ${books}" class="cart-item">
@@ -45,6 +46,17 @@
                             </td>
 
                         </tr>
+
+                        <div>
+                            <th:block>
+                                <form th:action="@{'/cart/export/pdf'}">
+                                    <button type="submit"
+                                            class="btn btn-block btn-dark add-product-btn">
+                                        Generate PDF
+                                    </button>
+                                </form>
+                            </th:block>
+                        </div>
                         </tbody>
                     </table>
                 </div>
