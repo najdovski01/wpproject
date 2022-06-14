@@ -1,0 +1,50 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">E-Library</h1>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <form action="/publishHouses/add" method="POST">
+                    <input id="id" type="hidden" name="id" th:value="(${publishHouse} != null ? ${publishHouse.getId()} : '')">
+                    <div class="form-group">
+                        <label for="name">Publish House name</label>
+                        <input type="text"
+                               class="form-control"
+                               id="name"
+                               name="name"
+                               th:value="(${publishHouse} != null ? ${publishHouse.getName()} : '')"
+                               required
+                               placeholder="Enter Publish House name">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Publish House address</label>
+                        <input type="text"
+                               class="form-control"
+                               id="address"
+                               name="address"
+                               th:value="(${publishHouse} != null ? ${publishHouse.getAddress()} : '')"
+                               placeholder="Enter Publish House address">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Publish House country</label>
+                        <input type="text"
+                               class="form-control"
+                               id="country"
+                               name="country"
+                               th:value="(${publishHouse} != null ? ${publishHouse.getCountry()} : '')"
+                               placeholder="Enter Publish House country origin">
+                    </div>
+
+                    <button id="submit" href="/publishHouses/add" type="submit" class="btn btn-primary">Submit</button>
+                    <a type="button" class="btn btn-primary" href="/publishHouses">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>

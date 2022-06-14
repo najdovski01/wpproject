@@ -1,0 +1,60 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">E-Library SHOP</h1>
+            <h3 class="jumbotron-heading">All Publish Houses</h3>
+        </div>
+    </section>
+
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12" th:if="${publishHouses.size() > 0}">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">Publish House name</th>
+                            <th scope="col">Publish House address</th>
+                            <th scope="col">Publish House country</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="publishHouse : ${publishHouses}" class="publishHouses">
+                            <td th:text="${publishHouse.getName()}"></td>
+                            <td th:text="${publishHouse.getAddress()}"></td>
+                            <td th:text="${publishHouse.getCountry()}"></td>
+
+                            <td class="text-right">
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <form th:action="@{'/publishHouses/delete/{id}' (id=${publishHouse.getId()})}"
+                                          th:method="DELETE">
+                                        <button type="submit" value="Delete"
+                                                class="btn btn-sm btn-danger delete-publishHouse">
+                                            <!--<i class="fa fa-trash">Delete</i>-->
+                                        </button>
+                                    </form>
+                                </th:block>
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <a th:href="@{'/publishHouses/edit-form/{id}' (id=${publishHouse.getId()})}"
+                                       class="btn btn-sm btn-info edit-publishHouse">
+                                        <i class="fa fa-trash">Edit</i>
+                                    </a>
+                                </th:block>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a href="/publishHouses/add-form" class="btn btn-block btn-dark add-publishHouse-btn">
+                            Add new publish house
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
